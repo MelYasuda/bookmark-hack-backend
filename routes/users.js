@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {User, validate} = require('../models/user');
 const bcrypt = require('bcrypt');
+const passport = require('passport');
 
 router.post('/', async (req, res) => {
   const {error} = validate(req.body);
@@ -24,11 +25,21 @@ router.post('/', async (req, res) => {
   
   await user.save();
 
-  const token = user.generateAuthToken();
-  res.header('x-auth-token', token).send({
-    name: name,
-    email: email
-  });
+  passport.authenticate('local', {session: false}, (err, user, info)=> {
+    if (err || !user) {
+      return res.status(400).json({
+        message: err,
+        user: user
+      })
+    }
+    req.login(user, {session: false}, (err)=>{
+      if (err) {
+        res.send(err);
+      }
+      const token = user.generateAuthToken();
+      return res.json({user, token });
+    });
+  })(req,res); 
   
 })
 
