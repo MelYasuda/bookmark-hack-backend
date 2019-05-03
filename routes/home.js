@@ -3,21 +3,22 @@ const router = express.Router();
 const {Tag} = require('../models/tag');
 
 router.get('/', async (req, res) => {
-  console.log("here");
   const tag = await Tag.find({});
   res.send(tag);
 })
 
 router.post('/', async (req, res) => {
-  let tag = req.body;
+  let body = req.body;
+  console.log(req);
 
-  tag = new Tag({
-    name: tag.name
+  body.tags.forEach( async name => {
+    let tag = new Tag({
+      name: name
+    });
+    await tag.save();
   });
 
-  tag = await tag.save();
-
-  res.send(tag)
+  res.send()
 })
 
 module.exports = router;

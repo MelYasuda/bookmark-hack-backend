@@ -36,9 +36,9 @@ router.post('/', async (req, res) => {
       if (err) {
         res.send(err);
       }
+      const userValueToSend = (({email, name, _id}) => ({email, name, _id}))(user);
       const token = user.generateAuthToken();
-      return res.json({user, token });
-    });
+      return res.json({userValueToSend, token });    });
   })(req,res); 
   
 })

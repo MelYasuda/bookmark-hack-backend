@@ -1,22 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const {User} = require('../models/user');
-const bcrypt = require('bcrypt');
 const Joi = require('joi');
 const passport = require('passport');
+
 
 router.post('/', async (req, res) => {
   const {error} = validate(req.body);
   if(error) return res.status(400).send(error.details[0].message);
 
-  // let user = await User.findOne({email: req.body.email});
-  // if(!user) return res.status(400).send('Email or password is invalid');
+  passport.authenticate('local', {session: false, successRedirect: '/api/home'}, (err, user, info)=> {
 
-  // const isPasswordValid = await bcrypt.compare(req.body.password, user.password);
-  // if(!isPasswordValid) return res.status(400).send('Email or password is invalid');
-
-  passport.authenticate('local', {session: false}, (err, user, info)=> {
     if (err || !user) {
+      console.log(err)
       return res.status(400).json({
         message: err,
         user: user
@@ -26,8 +21,9 @@ router.post('/', async (req, res) => {
       if (err) {
         res.send(err);
       }
+      const userValueToSend = (({email, name, _id}) => ({email, name, _id}))(user);
       const token = user.generateAuthToken();
-      return res.json({user, token });
+      return res.json({userValueToSend, token });
     });
   })(req,res); 
 });
