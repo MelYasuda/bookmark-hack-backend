@@ -4,22 +4,38 @@ const {userSchema} = require('../models/user');
 
 const bookmarkSchema = new mongoose.Schema({
   user: {
-    type: userSchema,
-    require: true
+    name: {
+      type: String,
+      required: true,
+      maxlength: 50
+    },
+    _id: {
+      type: String,
+      required: true,
+      maxlength: 50
+    }
   },
   url: {
     type: String,
-    require: true,
+    required: true,
     maxlength: 1000
   },
   title: {
     type: String,
-    require: true,
+    maxlength: 500,
+    required: true
+  },
+  desc: {
+    type: String,
     maxlength: 500
+  },
+  image: {
+    type: String,
+    maxlength: 500,
   },
   tags: {
     type: Array,
-    require: true,
+    required: true,
     maxlength: 100
   },
   unfinished: {
@@ -32,7 +48,7 @@ const bookmarkSchema = new mongoose.Schema({
     required: true,
     default: false
   },
-  remindMeLater: {
+  remind: {
     type: Boolean,
     default: false,
     dateToRemind: Date
@@ -47,11 +63,12 @@ const Bookmark = mongoose.model('Bookmark', bookmarkSchema);
 function validate(bookmark) {
   const schema = {
     url: Joi.string().max(1000).required(),
-    title: Joi.string().max(500),
+    title: Joi.string().max(100).required(),
     tags: Joi.array().max(100).required(),
     unfinished: Joi.boolean(),
     important: Joi.boolean(),
-    remindMeLater: Joi.boolean()
+    remind: Joi.boolean(),
+    note: Joi.string().allow('').max(1000)
   }
 
   return Joi.validate(bookmark, schema)

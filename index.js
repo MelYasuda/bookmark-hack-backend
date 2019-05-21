@@ -5,7 +5,7 @@ const passport = require('passport');
 require('./passport');
 
 const splash = require('./routes/splash');
-const home = require('./routes/home');
+const tags = require('./routes/tags');
 const users = require('./routes/users');
 const auth = require('./routes/auth');
 const bookmarks = require('./routes/bookmarks');
@@ -15,14 +15,10 @@ mongoose.connect('mongodb://localhost/boomarkhack')
   .catch(()=>console.error('failed to connect to DB'));
 
 app.use(express.json());
-// app.use((req, res, next)=>{
-//   res.locals.isAuthenticated = req.headers.authorization ? true : false;
-//   next();
-// });
 app.use('/api/', splash);
 app.use('/api/users', users);
 app.use('/api/auth', auth);
-app.use('/api/home', passport.authenticate('jwt', {session: false}), home);
+app.use('/api/tags', passport.authenticate('jwt', {session: false}), tags);
 app.use('/api/bookmarks', passport.authenticate('jwt', {session: false}), bookmarks);
 
 app.get('/logout', (req, res) => {

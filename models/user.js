@@ -6,20 +6,23 @@ const config = require('config');
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    require: true,
+    required: true,
     maxlength: 50
   },
   email: {
     type: String,
-    require: true,
+    required: true,
     maxlength: 255,
     unique: true
   },
   password: {
     type: String,
-    require: true,
+    required: true,
     minlength: 6,
     maxlength: 1024
+  },
+  tags: {
+    type: Array
   }
 });
 
@@ -30,11 +33,14 @@ userSchema.methods.generateAuthToken = function() {
 
 const User = mongoose.model('User', userSchema);
 
+// User.collection.createIndex( { "email": 1 }, { sparse: true } );
+
 function validate(user) {
   const schema = {
     name: Joi.string().max(50).required(),
     email: Joi.string().max(225).required().email(),
-    password: Joi.string().min(6).max(225).required()
+    password: Joi.string().min(6).max(225).required(),
+    tags: Joi.array()
   }
 
   return Joi.validate(user, schema);
