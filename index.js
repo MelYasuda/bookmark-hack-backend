@@ -19,7 +19,7 @@ app.use(express.json());
 app.use('/api/', splash);
 app.use('/api/users', users);
 app.use('/api/auth', auth);
-app.use('/api/tags', passport.authenticate('jwt', {session: false}), tags);
+app.use('/api/tags', tags);
 app.use('/api/bookmarks', passport.authenticate('jwt', {session: false}), bookmarks);
 
 app.get('/logout', (req, res) => {
