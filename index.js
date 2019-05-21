@@ -9,8 +9,9 @@ const tags = require('./routes/tags');
 const users = require('./routes/users');
 const auth = require('./routes/auth');
 const bookmarks = require('./routes/bookmarks');
+const config = require('config');
 
-mongoose.connect('mongodb://localhost/boomarkhack')
+mongoose.connect(config.get('db'))
   .then(()=>console.log('connected to MongoDB'))
   .catch(()=>console.error('failed to connect to DB'));
 
